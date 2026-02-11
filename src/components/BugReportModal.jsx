@@ -60,13 +60,13 @@ const BugReportModal = ({ isOpen, onClose }) => {
                 </h2>
 
                 {isSent ? (
-                    <div style={{ textAlign: 'center', padding: '2rem 0', color: 'var(--success)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
-                            <CheckCircle size={48} />
+                    <div style={{ textAlign: 'center', padding: '2rem 0', color: 'var(--success)', animation: 'fadeIn 0.5s ease' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem', animation: 'scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}>
+                            <CheckCircle size={64} strokeWidth={3} />
                         </div>
-                        <h3>Report Sent!</h3>
-                        <p style={{ color: 'var(--text-secondary)' }}>
-                            Thanks for your feedback. We've sent details to <strong>kiranhosakeri@gmail.com</strong>.
+                        <h2 style={{ marginBottom: '0.5rem' }}>Reported to Admin</h2>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>
+                            Thank you for your feedback!
                         </p>
                     </div>
                 ) : (

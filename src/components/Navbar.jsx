@@ -1,4 +1,6 @@
-// ... imports
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Briefcase, User, Bell, CheckCircle, Bug } from 'lucide-react';
 import BugReportModal from './BugReportModal';
 
 const Navbar = () => {
@@ -6,11 +8,38 @@ const Navbar = () => {
     const [showNotifications, setShowNotifications] = useState(false);
     const [showBugReport, setShowBugReport] = useState(false);
 
-    // ... useEffect ...
+    // Add simple CSS for dropdown hover
+    React.useEffect(() => {
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .nav-dropdown:hover .dropdown-content { display: flex !important; }
+            .dropdown-content a:hover { background: #f8fafc; color: var(--primary) !important; }
+        `;
+        document.head.appendChild(style);
+        return () => document.head.removeChild(style);
+    }, []);
 
-    // ... notifications ...
+    // Mock Notifications
+    const [notifications, setNotifications] = useState([
+        { id: 1, text: 'New Frontend job at TechCorp!', time: '2m ago', read: false },
+        { id: 2, text: 'Your application to DataSystems was viewed.', time: '1h ago', read: false },
+        { id: 3, text: 'Complete your profile to get more matches.', time: '1d ago', read: true }
+    ]);
 
-    // ... return ...
+    const unreadCount = notifications.filter(n => !n.read).length;
+
+    const handleLogout = () => {
+        localStorage.removeItem('jobsy_current_user');
+        window.location.href = '/';
+    };
+
+    const toggleNotifications = () => {
+        setShowNotifications(!showNotifications);
+        if (!showNotifications) {
+            // Mark all as read when opening (mock logic)
+            setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+        }
+    };
 
     return (
         <>
