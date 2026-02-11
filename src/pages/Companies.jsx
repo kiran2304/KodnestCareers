@@ -4,52 +4,83 @@ import { Building2, MapPin, Users, Globe } from 'lucide-react';
 const COMPANIES = [
     {
         id: 1,
-        name: 'TechCorp',
-        industry: 'Software',
-        location: 'Bangalore, KA',
-        employees: '1000-5000',
-        description: 'Leading the way in innovative software solutions for enterprise clients ind India.',
-        website: 'techcorp.in'
+        name: 'Google',
+        industry: 'Technology',
+        location: 'Bangalore, Hyderabad',
+        employees: '100,000+',
+        description: 'Organizing the world\'s information and making it universally accessible and useful.',
+        website: 'google.com'
     },
     {
         id: 2,
-        name: 'Creative Studio',
-        industry: 'Design',
-        location: 'Remote',
-        employees: '50-200',
-        description: 'A global collective of designers, artists, and strategists.',
-        website: 'creativestudio.in'
+        name: 'Microsoft',
+        industry: 'Software',
+        location: 'Bangalore, Noida, Hyderabad',
+        employees: '100,000+',
+        description: 'Empowering every person and every organization on the planet to achieve more.',
+        website: 'microsoft.com'
     },
     {
         id: 3,
-        name: 'DataSystems',
-        industry: 'Data Analytics',
-        location: 'Mumbai, MH',
-        employees: '500-1000',
-        description: 'Turning complex data into actionable insights for businesses.',
-        website: 'datasystems.co.in'
+        name: 'Amazon',
+        industry: 'E-commerce',
+        location: 'Hyderabad, Bangalore',
+        employees: '1,000,000+',
+        description: 'Earth\'s most customer-centric company.',
+        website: 'amazon.jobs'
     },
     {
         id: 4,
-        name: 'GrowthInc',
-        industry: 'Marketing',
-        location: 'Gurgaon, HR',
-        employees: '200-500',
-        description: 'Accelerating business growth through precision marketing.',
-        website: 'growthinc.in'
+        name: 'Flipkart',
+        industry: 'E-commerce',
+        location: 'Bangalore, KA',
+        employees: '30,000+',
+        description: 'Leading e-commerce marketplace in India.',
+        website: 'flipkartcareers.com'
     },
     {
         id: 5,
-        name: 'CloudNet',
-        industry: 'Infrastructure',
-        location: 'Hyderabad, TS',
-        employees: '1000+',
-        description: 'Building the backbone of the modern internet infrastructure.',
-        website: 'cloudnet.in'
+        name: 'TCS',
+        industry: 'IT Services',
+        location: 'Mumbai, Pune, Chennai',
+        employees: '600,000+',
+        description: 'Building on belief to create a meaningful future through innovation and technology.',
+        website: 'tcs.com'
+    },
+    {
+        id: 6,
+        name: 'Infosys',
+        industry: 'IT Consulting',
+        location: 'Bangalore, Pune, Mysore',
+        employees: '300,000+',
+        description: 'Navigate your next with the global leader in next-generation digital services.',
+        website: 'infosys.com'
+    },
+    {
+        id: 7,
+        name: 'Zomato',
+        industry: 'Food Tech',
+        location: 'Gurgaon, HR',
+        employees: '5,000+',
+        description: 'Better food for more people.',
+        website: 'zomato.com'
+    },
+    {
+        id: 8,
+        name: 'Swiggy',
+        industry: 'Food Tech',
+        location: 'Bangalore, Remote',
+        employees: '5,000+',
+        description: 'Changing the way India eats.',
+        website: 'swiggy.com'
     }
 ];
 
+import { useNavigate } from 'react-router-dom';
+
 const Companies = () => {
+    const navigate = useNavigate();
+
     return (
         <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
             <h1 style={{ marginBottom: '2rem' }}>Top Companies</h1>
@@ -89,7 +120,11 @@ const Companies = () => {
                             </span>
                         </div>
 
-                        <button className="btn btn-outline" style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>
+                        <button
+                            className="btn btn-outline"
+                            style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}
+                            onClick={() => navigate('/jobs', { state: { company: company.name } })}
+                        >
                             View Jobs
                         </button>
                     </div>

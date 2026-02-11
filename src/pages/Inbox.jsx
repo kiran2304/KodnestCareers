@@ -33,7 +33,10 @@ const MOCK_EMAILS = [
 
 const Inbox = () => {
     const [selectedEmail, setSelectedEmail] = useState(null);
-    const [emails, setEmails] = useState(MOCK_EMAILS);
+    const [emails, setEmails] = useState(() => {
+        const storedEmails = JSON.parse(localStorage.getItem('jobsy_emails') || '[]');
+        return [...storedEmails, ...MOCK_EMAILS];
+    });
 
     // Filter out deleted? For now just simplistic list
 

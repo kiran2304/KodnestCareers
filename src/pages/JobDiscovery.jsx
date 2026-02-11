@@ -1,141 +1,22 @@
 import React, { useState } from 'react';
 import { Search, MapPin, Briefcase, DollarSign, Filter } from 'lucide-react';
 
-const MOCK_JOBS = [
-    {
-        id: 1,
-        title: 'Senior Frontend Engineer',
-        company: 'TechCorp',
-        location: 'Bangalore, KA',
-        type: 'Full-time',
-        salary: '₹25L - ₹35L',
-        salaryMin: 25,
-        salaryMax: 35,
-        skills: ['React', 'TypeScript', 'Node.js'],
-        posted: '2 days ago',
-        applyLink: 'https://techcorp.jobs/apply/123'
-    },
-    {
-        id: 2,
-        title: 'Product Designer',
-        company: 'Creative Studio',
-        location: 'Remote',
-        type: 'Full-time',
-        salary: '₹15L - ₹22L',
-        salaryMin: 15,
-        salaryMax: 22,
-        skills: ['Figma', 'UI/UX', 'Mobile'],
-        posted: '4 hours ago',
-        applyLink: 'https://creativestudio.design/careers'
-    },
-    {
-        id: 3,
-        title: 'Backend Developer',
-        company: 'DataSystems',
-        location: 'Mumbai, MH',
-        type: 'Contract',
-        salary: '₹18L - ₹24L',
-        salaryMin: 18,
-        salaryMax: 24,
-        skills: ['Python', 'Django', 'AWS'],
-        posted: '1 day ago',
-        applyLink: null // Internal Apply
-    },
-    {
-        id: 4,
-        title: 'Marketing Manager',
-        company: 'GrowthInc',
-        location: 'Gurgaon, HR',
-        type: 'Full-time',
-        salary: '₹12L - ₹18L',
-        salaryMin: 12,
-        salaryMax: 18,
-        skills: ['SEO', 'Content', 'Analytics'],
-        posted: '5 days ago',
-        applyLink: 'https://growthinc.marketing/jobs'
-    },
-    {
-        id: 5,
-        title: 'DevOps Engineer',
-        company: 'CloudNet',
-        location: 'Remote',
-        type: 'Full-time',
-        salary: '₹20L - ₹30L',
-        salaryMin: 20,
-        salaryMax: 30,
-        skills: ['Kubernetes', 'Docker', 'Terraform'],
-        posted: '3 days ago',
-        applyLink: null
-    },
-    {
-        id: 6,
-        title: 'Junior React Developer',
-        company: 'StartUp Hub',
-        location: 'Remote',
-        type: 'Internship',
-        salary: '₹2L - ₹4L',
-        salaryMin: 2,
-        salaryMax: 4,
-        skills: ['React', 'JavaScript', 'CSS'],
-        posted: '6 hours ago',
-        applyLink: 'https://startuphub.io/interns'
-    },
-    {
-        id: 7,
-        title: 'Data Scientist',
-        company: 'AI Solutions',
-        location: 'Hyderabad, TS',
-        type: 'Full-time',
-        salary: '₹28L - ₹40L',
-        salaryMin: 28,
-        salaryMax: 40,
-        skills: ['Python', 'Machine Learning', 'SQL'],
-        posted: '1 week ago',
-        applyLink: null
-    },
-    {
-        id: 8,
-        title: 'Freelance Copywriter',
-        company: 'ContentWorks',
-        location: 'Remote',
-        type: 'Part-time',
-        salary: '₹5L - ₹10L',
-        salaryMin: 5,
-        salaryMax: 10,
-        skills: ['Copywriting', 'SEO', 'Blogging'],
-        posted: '2 days ago',
-        applyLink: 'https://contentworks.agency/freelance'
-    },
-    {
-        id: 9,
-        title: 'Go Developer',
-        company: 'BackendPro',
-        location: 'Pune, MH',
-        type: 'Contract',
-        salary: '₹20L - ₹25L',
-        salaryMin: 20,
-        salaryMax: 25,
-        skills: ['Go', 'Microservices', 'gRPC'],
-        posted: '3 days ago',
-        applyLink: null
-    },
-    {
-        id: 10,
-        title: 'UX Researcher',
-        company: 'UserFirst',
-        location: 'Noida, UP',
-        type: 'Part-time',
-        salary: '₹8L - ₹12L',
-        salaryMin: 8,
-        salaryMax: 12,
-        skills: ['User Testing', 'Research', 'Analysis'],
-        posted: '1 day ago',
-        applyLink: null
-    }
-];
+
+
+// Imports
+import JobService from '../services/JobService';
+import { useLocation } from 'react-router-dom';
 
 const JobDiscovery = () => {
-    const [searchTerm, setSearchTerm] = useState('');
+    const location = useLocation();
+
+    // Initialize DB on first load
+    React.useEffect(() => {
+        JobService.init();
+    }, []);
+
+    const [jobs, setJobs] = useState(JobService.getAll());
+    const [searchTerm, setSearchTerm] = useState(location.state?.company || '');
     const [filters, setFilters] = useState({
         type: [],
         remote: false,
@@ -145,8 +26,8 @@ const JobDiscovery = () => {
     });
 
     // Extract unique locations and skills for filter options
-    const uniqueLocations = [...new Set(MOCK_JOBS.map(job => job.location))];
-    const uniqueSkills = [...new Set(MOCK_JOBS.flatMap(job => job.skills))];
+    const uniqueLocations = [...new Set(jobs.map(job => job.location))];
+    const uniqueSkills = [...new Set(jobs.flatMap(job => job.skills))];
 
     const handleTypeChange = (type) => {
         setFilters(prev => ({
@@ -188,7 +69,7 @@ const JobDiscovery = () => {
         setSearchTerm('');
     };
 
-    const filteredJobs = MOCK_JOBS.filter(job => {
+    const filteredJobs = jobs.filter(job => {
         const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
             job.company.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesType = filters.type.length === 0 || filters.type.includes(job.type);
@@ -344,10 +225,12 @@ const JobDiscovery = () => {
                             if (job.applyLink) {
                                 // External Application
                                 window.open(job.applyLink, '_blank');
-                                // Track as "Redirected" application
+
+                                // EMAIL PIPELINE SIMULATION
+                                // 1. Add to local applications
                                 const newApplication = {
                                     id: Date.now(),
-                                    jobId: job.id, // Store job ID for easier cancellation matching
+                                    jobId: job.id,
                                     company: job.company,
                                     role: job.title,
                                     status: 'Applied (External)',
@@ -356,12 +239,29 @@ const JobDiscovery = () => {
                                 const existingApps = JSON.parse(localStorage.getItem('my_applications') || '[]');
                                 localStorage.setItem('my_applications', JSON.stringify([newApplication, ...existingApps]));
                                 localStorage.setItem(`applied_${job.id}`, 'true');
+
+                                // 2. Send "Confirmation Email" to Inbox
+                                const existingEmails = JSON.parse(localStorage.getItem('jobsy_emails') || '[]');
+                                const newEmail = {
+                                    id: Date.now(),
+                                    sender: `careers@${job.company.toLowerCase().replace(/\s/g, '')}.com`,
+                                    subject: `Application Received: ${job.title}`,
+                                    preview: `Thank you for applying to ${job.company}. We have received your...`,
+                                    body: `Hi ${JSON.parse(localStorage.getItem('jobsy_current_user'))?.name || 'Candidate'},\n\nThank you for applying to the ${job.title} position at ${job.company}. We have successfully received your application via our external portal.\n\nOur team will review your profile and get back to you if your skills match our requirements.\n\nBest Regards,\nThe ${job.company} Hiring Team`,
+                                    time: 'Just now',
+                                    read: false,
+                                    starred: false
+                                };
+                                localStorage.setItem('jobsy_emails', JSON.stringify([newEmail, ...existingEmails]));
+
+                                // Notify User
+                                alert(`Redirecting to ${job.company}'s career page...\n\n(Simulation: Confirmation email sent to your Jobsy Inbox)`);
                                 window.location.reload();
                             } else {
                                 // Internal Application
                                 const newApplication = {
                                     id: Date.now(),
-                                    jobId: job.id, // Store job ID
+                                    jobId: job.id,
                                     company: job.company,
                                     role: job.title,
                                     status: 'Applied',
@@ -370,6 +270,21 @@ const JobDiscovery = () => {
                                 const existingApps = JSON.parse(localStorage.getItem('my_applications') || '[]');
                                 localStorage.setItem('my_applications', JSON.stringify([newApplication, ...existingApps]));
                                 localStorage.setItem(`applied_${job.id}`, 'true');
+
+                                // Email Pipeline for Internal too
+                                const existingEmails = JSON.parse(localStorage.getItem('jobsy_emails') || '[]');
+                                const newEmail = {
+                                    id: Date.now(),
+                                    sender: `careers@${job.company.toLowerCase().replace(/\s/g, '')}.com`,
+                                    subject: `Application Confirmation: ${job.title}`,
+                                    preview: `We have received your application for ${job.title}...`,
+                                    body: `Hi there,\n\nYour application for ${job.title} at ${job.company} has been submitted successfully.\n\nYou can track your status in the Dashboard.\n\nBest,\nJobsy Team`,
+                                    time: 'Just now',
+                                    read: false,
+                                    starred: false
+                                };
+                                localStorage.setItem('jobsy_emails', JSON.stringify([newEmail, ...existingEmails]));
+
                                 window.location.reload();
                             }
                         };

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Settings, Globe, Database, Bell, Shield, Play, RefreshCw, CheckCircle } from 'lucide-react';
+import { Settings, Globe, Database, Bell, Shield, Play, RefreshCw, CheckCircle, Clock } from 'lucide-react';
+import JobService from '../services/JobService';
 
 const SettingsPage = () => {
     const [activeTab, setActiveTab] = useState('Data Sources');
@@ -82,6 +83,61 @@ const SettingsPage = () => {
 
                     {activeTab === 'Data Sources' && (
                         <div className="card">
+                            <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                <RefreshCw /> Real-time Data Engine
+                            </h3>
+
+                            <div style={{ padding: '1.5rem', background: '#f8fafc', borderRadius: 'var(--radius-md)', marginBottom: '2rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                    <div>
+                                        <h4 style={{ margin: 0, marginBottom: '0.5rem' }}>Job Database Status</h4>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--success)', fontSize: '0.9rem' }}>
+                                            <CheckCircle size={16} /> Connected to 8 External Sources
+                                        </div>
+                                    </div>
+                                    <div className="badge badge-success">Online</div>
+                                </div>
+
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <Clock size={16} /> Last Synced: {new Date(JobService.getLastSync()).toLocaleString()}
+                                    </div>
+                                    <div>
+                                        Total Jobs: {JobService.getAll().length}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h4 style={{ marginBottom: '1rem' }}>Sync Controls</h4>
+                            <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)' }}>
+                                    <div>
+                                        <div style={{ fontWeight: 600 }}>Daily Auto-Refresh</div>
+                                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Automatically fetch new jobs every 24 hours</div>
+                                    </div>
+                                    <label className="switch">
+                                        <input type="checkbox" defaultChecked />
+                                        <span className="slider round"></span>
+                                    </label>
+                                </div>
+
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => {
+                                        const count = JobService.sync();
+                                        alert(`Sync Complete!\n\nFound ${count} new jobs matching your profile.\n\nRedirecting to Job Discovery...`);
+                                        window.location.href = '/jobs';
+                                    }}
+                                    style={{ justifyContent: 'center', padding: '1rem' }}
+                                >
+                                    <RefreshCw size={18} style={{ marginRight: '0.5rem' }} /> Force Update Now
+                                </button>
+                            </div>
+
+                            <div style={{ marginTop: '2rem', padding: '1rem', background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: '4px', fontSize: '0.9rem', color: '#c2410c' }}>
+                                <strong>Note:</strong> This engine simulates real-time scraper connections. In a production environment, this would run on a backend server (Node.js/Python) to bypass CORS restrictions.
+                            </div>
+
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1.5rem' }}>
                                 <div>
                                     <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
