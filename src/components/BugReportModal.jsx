@@ -60,14 +60,68 @@ const BugReportModal = ({ isOpen, onClose }) => {
                 </h2>
 
                 {isSent ? (
-                    <div style={{ textAlign: 'center', padding: '2rem 0', color: 'var(--success)', animation: 'fadeIn 0.5s ease' }}>
-                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem', animation: 'scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}>
-                            <CheckCircle size={64} strokeWidth={3} />
+                    <div style={{ textAlign: 'center', padding: '2rem 0', position: 'relative', overflow: 'hidden' }}>
+                        {/* Confetti Effect */}
+                        {[...Array(20)].map((_, i) => (
+                            <div
+                                key={i}
+                                style={{
+                                    position: 'absolute',
+                                    width: '10px',
+                                    height: '10px',
+                                    background: ['#10b981', '#2563eb', '#f59e0b', '#ef4444', '#8b5cf6'][i % 5],
+                                    top: '-10px',
+                                    left: `${Math.random() * 100}%`,
+                                    animation: `confetti ${1 + Math.random()}s ease-out forwards`,
+                                    animationDelay: `${Math.random() * 0.3}s`,
+                                    borderRadius: '50%',
+                                    opacity: 0.8
+                                }}
+                            />
+                        ))}
+
+                        <div style={{
+                            color: 'var(--success)',
+                            animation: 'fadeIn 0.5s ease',
+                            position: 'relative',
+                            zIndex: 1
+                        }}>
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                marginBottom: '1rem',
+                                animation: 'scaleUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                            }}>
+                                <CheckCircle size={72} strokeWidth={3} style={{ filter: 'drop-shadow(0 4px 12px rgba(16, 185, 129, 0.3))' }} />
+                            </div>
+                            <h2 style={{
+                                marginBottom: '0.5rem',
+                                animation: 'slideUp 0.6s ease 0.2s backwards',
+                                fontSize: '1.8rem'
+                            }}>
+                                Reported to Admin
+                            </h2>
+                            <p style={{
+                                color: 'var(--text-secondary)',
+                                fontSize: '1.1rem',
+                                animation: 'slideUp 0.6s ease 0.3s backwards'
+                            }}>
+                                Thank you for your feedback!
+                            </p>
                         </div>
-                        <h2 style={{ marginBottom: '0.5rem' }}>Reported to Admin</h2>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>
-                            Thank you for your feedback!
-                        </p>
+
+                        <style>{`
+                            @keyframes confetti {
+                                0% {
+                                    transform: translateY(0) rotate(0deg);
+                                    opacity: 1;
+                                }
+                                100% {
+                                    transform: translateY(500px) rotate(720deg);
+                                    opacity: 0;
+                                }
+                            }
+                        `}</style>
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit}>
